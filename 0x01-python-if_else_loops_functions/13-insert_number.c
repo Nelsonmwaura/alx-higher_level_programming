@@ -1,5 +1,9 @@
 #include "lists.h"
-#include <stddef.h>
+#include <stdlib.h>
+#include <stdio.h>
+#include <string.h>
+
+listint_t *create_node(int n);
 
 /**
  * insert_node - sorted singly linked lists
@@ -9,55 +13,54 @@
  */
 listint_t *insert_node(listint_t **head, int number)
 {
-	listint_t *tmp = NULL;
-	listint_t *new = NULL;
+	listint_t *old_node = NULL, *new_node = NULL;
 
 	if (!head)
 		return (NULL);
+	else if (!(*head))
+	{
+		new_node = create_node(number);
+		*head = new_node;
+		return (new_node);
+	}
+	old_node = *head;
+	while (old_node)
+	{
+		if (old_node->n >= number)
+		{
+			new_node = create_node(number);
+			new_node->next = old_node;
+			*head = new_node;
+			return (new_node);
+		}
+		else if (old_node->n <= number)
+		{
+			if (!old_node->next || old_node->next->n >= number)
+			{
+				new_node = create_node(number);
+				new_node->next = old_node->next;
+				old_node->next = new_node;
+				return (old_node->next);
+			}
+		}
+		old_node = old_node->next;
+	}
+	return (NULL);
+}
 
-	new = malloc(sizeof(listint_t));
-	if (new == NULL)
+/**
+ * create_node - creates a node
+ * @n: data to insert
+ * Return: pointer to new node
+ */
+listint_t *create_node(int n)
+{
+	listint_t *ret = NULL;
+
+	ret = malloc(sizeof(listint_t));
+	if (!ret)
 		return (NULL);
-	new->num = number;
-	new->next = NULL;
-
-	if (*head == NULL)
-	{
-		*head = new;
-		(*head)->next = NULL;
-		return (new);
-	}
-	if ((*head)->next == NULL)
-	{
-		if ((*head)->n < new->n)
-			(*head)->next = new;
-		else
-		{
-			new->next = *head;
-			*head = new;
-		}
-		return (new);
-	}
-
-	tmp = *head;
-	while (tmp->next != NULL)
-	{
-		if (new->n < tmp->n)
-		{
-			new->next = tmp;
-			*head = new;
-			return (new);
-		}
-		
-		if (((new->n > tmp->n) && (new->n < (tmp->next)->n)) || (new->n == tmp->n))
-		{
-			new->next = tmp->next;
-			tmp->next = new;
-			return (new);
-		}
-		tmp = tmp->next;
-	}
-
-	tmp->next = new;
-	return (new);
+	ret->next = NULL;
+	ret->n = n;
+	return (ret);
 }
