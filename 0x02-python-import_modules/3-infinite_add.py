@@ -1,14 +1,8 @@
 #!/usr/bin/python3
-import sys
-
-if __name__ != "__main__":
-    exit()
-
-i = 0
-result = 0
-for argument in sys.argv:
-    if i != 0:
-        result += int(argument)
-    else:
-        i += 1
-    print("{:d}".format(result))
+if __name__ == "__main__":
+    import sys
+    result = 0
+    if (len(sys.argv) > 1):
+        for i in range(1, len(sys.argv)):
+            result += (int(sys.argv[i]))
+        print("{:d}".format(result))
